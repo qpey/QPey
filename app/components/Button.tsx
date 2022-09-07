@@ -8,6 +8,7 @@ import {
 } from 'react-native';
 import React from 'react';
 import Text from './Text';
+import {COLORS} from '../config/colors';
 
 interface ButtonProps {
   style?: StyleProp<ViewStyle>;
@@ -40,7 +41,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     alignSelf: 'center',
     borderRadius: 4,
-    backgroundColor: 'pink',
+    backgroundColor: COLORS.primary,
     justifyContent: 'center',
     width: '100%',
     marginVertical: 2,
