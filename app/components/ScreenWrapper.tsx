@@ -1,6 +1,7 @@
 import {
   ScrollView,
   ScrollViewProps,
+  StatusBar,
   StyleProp,
   StyleSheet,
   View,
@@ -24,6 +25,7 @@ const ScreenWrapper: React.FC<ScreenWrapperProps> = ({
   const containerStyle = [styles.container, {backgroundColor: '#FFF'}];
   return (
     <React.Fragment>
+      <StatusBar backgroundColor={'#FFF'} barStyle="dark-content" />
       {scrollable ? (
         <ScrollView
           contentContainerStyle={contentContainerStyle}

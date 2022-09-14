@@ -1,19 +1,61 @@
-import {StatusBar, StyleSheet, TouchableOpacity, View} from 'react-native';
-import React from 'react';
+import {StatusBar, StyleSheet, View} from 'react-native';
+import React, {useState} from 'react';
 import QRCodeScanner from 'react-native-qrcode-scanner';
 import {RNCamera} from 'react-native-camera';
+import axios from 'axios';
 
 import {Button, ScreenWrapper, Text} from '../components';
 
+const SERVER_URL = '';
+const TOKEN = '';
+
 const Home = () => {
+  const [scan, setScan] = useState<boolean>(false);
+  const [fail, setFailure] = useState<boolean>(false);
+  const [result, setResult] = useState<string | null>(null);
+
+  const callToServer = async (data: {}) => {
+    setScan(false);
+    try {
+      const response = await axios.post(SERVER_URL, data, {
+        headers: {
+          Authorization: `Bearer ${TOKEN}`,
+        },
+      });
+
+      if (!response) {
+        // launch fail
+        setFailure(true);
+      }
+    } catch (error: any) {
+      console.log(error.message);
+    }
+  };
+
   const onReadSuccess = (e: any) => {
     console.log(e?.data);
+    const data = {
+      url: e?.data?.url,
+    };
+
+    // if response, call to api
+    callToServer(data);
+
+    // redirect to the payment details screen, along with
+    // payment params.
+
+    // else provide a re-scan
+  };
+
+  const restartScanning = () => {
+    setScan(true);
+    setResult(null);
   };
 
   return (
     <React.Fragment>
       <StatusBar backgroundColor={'#FFF'} barStyle="dark-content" />
-      <ScreenWrapper>
+      <ScreenWrapper style={{paddingHorizontal: 4}}>
         <View style={styles.header}>
           <Text>Safe QR-Code Scanner</Text>
         </View>
@@ -21,41 +63,68 @@ const Home = () => {
         <View
           style={{
             flex: 1,
-            marginVertical: 8,
-            overflow: 'hidden',
+            alignItems: 'center',
+            justifyContent: 'center',
+            // overflow: 'hidden',
           }}>
-          <QRCodeScanner
-            onRead={onReadSuccess}
-            flashMode={RNCamera.Constants.FlashMode.off}
-            containerStyle={{
-              flex: 1,
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}
-            topViewStyle={{flex: 0}}
-            bottomViewStyle={{flex: 0}}
-            cameraStyle={{overflow: 'hidden', height: '100%'}}
-            cameraContainerStyle={{
-              height: 440,
-              marginVertical: 8,
-              backgroundColor: '#FEF8FE',
-            }}
-            topContent={
-              <Text style={styles.centerText}>
-                Go to{' '}
-                <Text style={styles.textBold}>wikipedia.org/wiki/QR_code</Text>{' '}
-                on your computer and scan the QR code.
-              </Text>
-            }
-            bottomContent={
-              <Button
-                text="re-scan"
-                onPress={() => console.log('rescanning ...')}
-                style={{width: '80%', alignSelf: 'center'}}
+          {/* only show scanner if button clicked */}
+          {!scan && (
+            <Button
+              text="Scan"
+              onPress={() => setScan(true)}
+              style={{width: '60%'}}
+            />
+          )}
+
+          {scan && (
+            <React.Fragment>
+              <QRCodeScanner
+                onRead={onReadSuccess}
+                flashMode={RNCamera.Constants.FlashMode.off}
+                containerStyle={{
+                  flex: 1,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  overflow: 'hidden',
+                }}
+                topViewStyle={{flex: 0, paddingHorizontal: 4}}
+                bottomViewStyle={{flex: 0}}
+                cameraStyle={{
+                  overflow: 'hidden',
+                  height: '100%',
+                  borderRadius: 8,
+                }}
+                cameraContainerStyle={{
+                  height: 400,
+                  marginVertical: 8,
+                  backgroundColor: '#f5eff5',
+                  // borderRadius: 16,
+                  overflow: 'hidden',
+                  // padding: 8,
+                  width: '90%',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+                topContent={
+                  <Text style={styles.centerText}>
+                    Go to{' '}
+                    <Text style={styles.textBold}>
+                      wikipedia.org/wiki/QR_code
+                    </Text>{' '}
+                    on your computer and scan the QR code.
+                  </Text>
+                }
+                bottomContent={
+                  <Button
+                    text="re-scan"
+                    onPress={restartScanning}
+                    style={{width: '80%', alignSelf: 'center'}}
+                  />
+                }
+                reactivate={true}
               />
-            }
-            reactivate
-          />
+            </React.Fragment>
+          )}
         </View>
       </ScreenWrapper>
     </React.Fragment>
@@ -78,13 +147,10 @@ const styles = StyleSheet.create({
 
   //   sample styles for qrcode component
   centerText: {
-    // flex: 1,
     fontSize: 18,
-    // padding: 32,
     color: '#777',
   },
   textBold: {
-    fontWeight: '500',
     color: '#000',
   },
   buttonText: {
