@@ -6,19 +6,22 @@ import * as Yup from 'yup';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 
 import {Button, ScreenWrapper, Text, TextInput} from '../components';
-import {COLORS, FONTS} from '../config';
+import {COLORS, FONTS, PHONE_REGX} from '../config';
 import {ErrorMessage} from '../components/form';
 import {AuthStackParamList} from '../navigation/AuthNavigation';
 
 const validationSchema = Yup.object().shape({
-  email: Yup.string().required().email().label('Email address'),
+  phone: Yup.string()
+    .required()
+    .matches(PHONE_REGX, 'Phone must be valid')
+    .label('phone address'),
   password: Yup.string().required().label('Password'),
 });
 
 type Props = NativeStackScreenProps<AuthStackParamList, 'SignUp'>;
 
 type SignupDetails = {
-  email: string;
+  phone: string;
   password: string;
   username: string;
 };
@@ -31,7 +34,7 @@ const Signin: React.FC<Props> = ({navigation}) => {
   return (
     <ScreenWrapper style={styles.screen}>
       <Formik
-        initialValues={{email: '', password: '', username: ''}}
+        initialValues={{phone: '', password: '', username: ''}}
         onSubmit={handleSubmitForm}
         validationSchema={validationSchema}>
         {({handleChange, handleSubmit, errors, touched}) => (
@@ -39,14 +42,14 @@ const Signin: React.FC<Props> = ({navigation}) => {
             <TextInput
               autoCapitalize="none"
               autoCorrect={false}
-              onChangeText={handleChange('email')}
-              keyboardType="email-address"
-              label="Email"
-              placeholder="Email address"
+              onChangeText={handleChange('phone')}
+              keyboardType="phone-pad"
+              label="Phone"
+              placeholder="Phone"
             />
             <ErrorMessage
-              error={errors.email as string}
-              visible={Boolean(touched.email)}
+              error={errors.phone as string}
+              visible={Boolean(touched.phone)}
             />
 
             <TextInput

@@ -9,16 +9,20 @@ import {Button, ScreenWrapper, Text, TextInput} from '../components';
 import {COLORS, FONTS} from '../config';
 import {ErrorMessage} from '../components/form';
 import {AuthStackParamList} from '../navigation/AuthNavigation';
+import {PHONE_REGX} from '../config';
 
 const validationSchema = Yup.object().shape({
-  email: Yup.string().required().email().label('Email address'),
+  phone: Yup.string()
+    .required()
+    .matches(PHONE_REGX, 'Invalid Phone Number')
+    .label('Phone'),
   password: Yup.string().required().label('Password'),
 });
 
 type Props = NativeStackScreenProps<AuthStackParamList, 'SignIn'>;
 
 type SigninDetails = {
-  email: string;
+  phone: string;
   password: string;
 };
 
@@ -30,7 +34,7 @@ const Signin: React.FC<Props> = ({navigation}) => {
   return (
     <ScreenWrapper style={styles.screen}>
       <Formik
-        initialValues={{email: '', password: ''}}
+        initialValues={{phone: '', password: ''}}
         onSubmit={handleSubmitForm}
         validationSchema={validationSchema}>
         {({handleChange, handleSubmit, errors, touched}) => (
@@ -38,14 +42,14 @@ const Signin: React.FC<Props> = ({navigation}) => {
             <TextInput
               autoCapitalize="none"
               autoCorrect={false}
-              onChangeText={handleChange('email')}
-              keyboardType="email-address"
-              label="Email"
-              placeholder="Email address"
+              onChangeText={handleChange('phone')}
+              keyboardType="phone-pad"
+              label="Phone Number"
+              placeholder="Phone"
             />
             <ErrorMessage
-              error={errors.email as string}
-              visible={Boolean(touched.email)}
+              error={errors.password as string}
+              visible={Boolean(touched.phone)}
             />
             <TextInput
               autoCapitalize="none"
@@ -79,7 +83,7 @@ const Signin: React.FC<Props> = ({navigation}) => {
           onPress={() => navigation.navigate('SignUp')}
           style={[styles.linkText]}>
           {' '}
-          Sign up
+          Register
         </Text>
       </Text>
     </ScreenWrapper>
