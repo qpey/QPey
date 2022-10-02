@@ -15,6 +15,7 @@ import java.util.List;
 
 import com.oblador.vectoricons.VectorIconsPackage;
 import org.reactnative.camera.RNCameraPackage;
+import com.reactnativecommunity.asyncstorage.AsyncStoragePackage;
 
 public class MainApplication extends Application implements ReactApplication {
 
@@ -33,6 +34,7 @@ public class MainApplication extends Application implements ReactApplication {
           
           // packages.add(new RNCameraPackage());
           // packages.add(new VectorIconsPackage());
+          // packages.add(new AsyncStoragePackage());
           
           // packages.add(new MyReactNativePackage());
           return packages;
