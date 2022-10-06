@@ -6,16 +6,20 @@ import {
   GenerateQRCodeScreen,
   HomeScreen,
   PaymentDetailsScreen,
+  PrintScreen,
 } from '../screens';
 
-type StackParamList = {
+export type MainNavigationParamList = {
   Home: undefined;
   PaymentDetails: undefined;
   Done: undefined;
   GenerateQRCode: undefined;
+  Print: {
+    qrcode: string;
+  };
 };
 
-const Stack = createNativeStackNavigator<StackParamList>();
+const Stack = createNativeStackNavigator<MainNavigationParamList>();
 
 const MainNavigation = () => {
   return (
@@ -24,6 +28,7 @@ const MainNavigation = () => {
       <Stack.Screen name="PaymentDetails" component={PaymentDetailsScreen} />
       <Stack.Screen name="Done" component={DoneScreen} /> */}
       <Stack.Screen name="GenerateQRCode" component={GenerateQRCodeScreen} />
+      <Stack.Screen name="Print" component={PrintScreen} />
     </Stack.Navigator>
   );
 };

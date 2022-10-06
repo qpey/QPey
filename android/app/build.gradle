@@ -269,6 +269,7 @@ dependencies {
     implementation project(':react-native-vector-icons')
     implementation project(':react-native-camera') // react-native-camera
     implementation project(':@react-native-async-storage')
+    implementation project(':react-native-webview')
 
     debugImplementation("com.facebook.flipper:flipper:${FLIPPER_VERSION}") {
         exclude group:'com.facebook.fbjni'

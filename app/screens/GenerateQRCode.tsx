@@ -1,12 +1,28 @@
 import React from 'react';
 import {StyleSheet, View} from 'react-native';
 import QRCodeGenerator from 'react-native-qrcode-svg';
+import {} from '@react-navigation/native';
 
 import {Button, ScreenWrapper, Text} from '../components';
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {MainNavigationParamList} from '../navigation/MainNavigation';
 
-const GenerateQRCode = () => {
+type Props = NativeStackScreenProps<MainNavigationParamList, 'GenerateQRCode'>;
+
+const GenerateQRCode: React.FC<Props> = ({navigation}) => {
   const [qrcodeData, setQrcodeData] = React.useState<null | string>(null);
   const [loading, setLoading] = React.useState(false);
+  const [qrcodeSvgRef, setQRCodeSvgRef] = React.useState<any>(null);
+  const [svgData, setSvgData] = React.useState<any>(null);
+
+  React.useEffect(() => {
+    // console.log(qrcodeSvgRef.toDataURL);
+    if (qrcodeSvgRef !== null) {
+      qrcodeSvgRef?.toDataURL((data: any) => {
+        setSvgData(data);
+      });
+    }
+  }, [qrcodeSvgRef]);
 
   const handlerGenerateQRCode = React.useCallback(() => {
     setQrcodeData(null);
@@ -36,6 +52,7 @@ const GenerateQRCode = () => {
             logoSize={30}
             logoBackgroundColor="transparent"
             size={200}
+            getRef={setQRCodeSvgRef}
           />
         </View>
       )}
@@ -43,6 +60,12 @@ const GenerateQRCode = () => {
       {/* action buttons */}
       <View style={styles.buttonsContainer}>
         <Button text="Generate QR-Code" onPress={handlerGenerateQRCode} />
+        <Button
+          text="Print QR-Code"
+          onPress={() => {
+            navigation.navigate('Print', {qrcode: svgData});
+          }}
+        />
       </View>
     </ScreenWrapper>
   );
