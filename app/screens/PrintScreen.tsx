@@ -1,11 +1,11 @@
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import React from 'react';
-import {ScrollView, Dimensions} from 'react-native';
+import {Dimensions} from 'react-native';
 import HTML from 'react-native-renders-html';
 import {Button, ScreenWrapper} from '../components';
-import {MainNavigationParamList} from '../navigation/MainNavigation';
+import {GenerateQRCodeParamList} from '../navigation/MainNavigation';
 
-type Props = NativeStackScreenProps<MainNavigationParamList, 'Print'>;
+type Props = NativeStackScreenProps<GenerateQRCodeParamList, 'Print'>;
 
 const Print: React.FC<Props> = ({route}) => {
   const htmlContent = `

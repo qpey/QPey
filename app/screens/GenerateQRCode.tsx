@@ -5,9 +5,9 @@ import {} from '@react-navigation/native';
 
 import {Button, ScreenWrapper, Text} from '../components';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {MainNavigationParamList} from '../navigation/MainNavigation';
+import {GenerateQRCodeParamList} from '../navigation/MainNavigation';
 
-type Props = NativeStackScreenProps<MainNavigationParamList, 'GenerateQRCode'>;
+type Props = NativeStackScreenProps<GenerateQRCodeParamList, 'GenerateQRCode'>;
 
 const GenerateQRCode: React.FC<Props> = ({navigation}) => {
   const [qrcodeData, setQrcodeData] = React.useState<null | string>(null);
