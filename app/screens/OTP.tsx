@@ -56,7 +56,7 @@ const OTP: React.FC<Props> = ({route}) => {
         codeInputFieldStyle={styles.underlineStyleBase}
         codeInputHighlightStyle={styles.underlineStyleHighLighted}
         onCodeFilled={handleCodeFilled}
-        placeholderTextColor={COLORS.text}
+        placeholderTextColor={COLORS.placeholder}
         placeholderCharacter="0"
       />
 

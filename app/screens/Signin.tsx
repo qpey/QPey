@@ -48,7 +48,7 @@ const Signin: React.FC<Props> = ({navigation}) => {
               placeholder="Phone"
             />
             <ErrorMessage
-              error={errors.password as string}
+              error={errors.phone as string}
               visible={Boolean(touched.phone)}
             />
             <TextInput

@@ -1,5 +1,4 @@
 import React from 'react';
-// import {StyleSheet} from 'react-native';
 
 import {NavigationContainer} from '@react-navigation/native';
 
@@ -9,7 +8,7 @@ import AuthNavigation from './app/navigation/AuthNavigation';
 const App = () => {
   return (
     <NavigationContainer>
-      <AuthNavigation />
+      <MainNavigation />
     </NavigationContainer>
   );
 };
