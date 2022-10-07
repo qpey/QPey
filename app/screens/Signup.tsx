@@ -1,5 +1,5 @@
-import {StyleSheet} from 'react-native';
 import React from 'react';
+import {Image, Keyboard, StyleSheet, View} from 'react-native';
 
 import {Formik} from 'formik';
 import * as Yup from 'yup';
@@ -10,12 +10,17 @@ import {COLORS, FONTS, PHONE_REGX} from '../config';
 import {ErrorMessage} from '../components/form';
 import {AuthStackParamList} from '../navigation/AuthNavigation';
 
+import authApis from '../apis/auth';
+import useAuth from '../hooks/useAuth';
+import useApi from '../hooks/useApi';
+
 const validationSchema = Yup.object().shape({
   phone: Yup.string()
     .required()
     .matches(PHONE_REGX, 'Phone must be valid')
-    .label('phone address'),
+    .label('Phone number'),
   password: Yup.string().required().label('Password'),
+  username: Yup.string().required().label('Username'),
 });
 
 type Props = NativeStackScreenProps<AuthStackParamList, 'SignUp'>;
@@ -27,12 +32,53 @@ type SignupDetails = {
 };
 
 const Signin: React.FC<Props> = ({navigation}) => {
-  const handleSubmitForm = async (values: SignupDetails) => {
-    console.log(values);
+  const [signUpError, setSignUpError] = React.useState('');
+  const signUpApi = useApi(authApis.registerUser);
+  const signInApi = useApi(authApis.loginUser);
+  const auth = useAuth();
+
+  const handleSubmitForm = async ({
+    username,
+    password,
+    phone,
+  }: SignupDetails) => {
+    Keyboard.dismiss();
+    setSignUpError('');
+
+    let response = await signUpApi.request({name: username, password, phone});
+    if (!response.ok) {
+      setSignUpError(response.data.message);
+      return;
+    }
+
+    // log user in
+    response = await signInApi.request({password, phone});
+    if (!response.ok) {
+      setSignUpError(response.data.message);
+      return;
+    }
+    await auth.signIn(response.data.authToken);
   };
 
   return (
     <ScreenWrapper style={styles.screen}>
+      {/* logo */}
+      <View style={styles.logoContainer}>
+        <Image
+          source={require('../assets/logo.png')}
+          style={styles.logo}
+          resizeMode="contain"
+        />
+      </View>
+
+      {signUpError && (
+        <ErrorMessage
+          error={signUpError}
+          visible={Boolean(signUpError)}
+          style={{alignSelf: 'center'}}
+        />
+      )}
+
       <Formik
         initialValues={{phone: '', password: '', username: ''}}
         onSubmit={handleSubmitForm}
@@ -99,7 +145,8 @@ export default Signin;
 const styles = StyleSheet.create({
   screen: {
     alignItems: 'center',
-    justifyContent: 'center',
+    // justifyContent: 'center',
+    paddingTop: 24,
     paddingHorizontal: 8,
   },
 
@@ -109,5 +156,14 @@ const styles = StyleSheet.create({
     marginTop: 16,
     textTransform: 'capitalize',
     paddingHorizontal: 6,
+  },
+
+  logo: {width: 60, height: 60},
+  logoContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: 100,
+    width: '100%',
+    marginVertical: 8,
   },
 });

@@ -8,6 +8,9 @@ const useApi = <T>(apiCall: any) => {
   const request = async (...args: any) => {
     setIsLoading(true);
     const response = await apiCall(...args);
+
+    console.log(response.data);
+
     setIsLoading(false);
 
     if (response.ok) {

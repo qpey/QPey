@@ -3,6 +3,7 @@ export {default as HomeScreen} from './Home';
 export {default as GenerateQRCodeScreen} from './GenerateQRCode';
 export {default as PaymentDetailsScreen} from './PaymentDetails';
 export {default as PrintScreen} from './PrintScreen';
+export {default as SettingsScreen} from './Settings';
 
 export {default as ForgotPasswordScreen} from './ForgotPassword';
 export {default as OTPScreen} from './OTP';

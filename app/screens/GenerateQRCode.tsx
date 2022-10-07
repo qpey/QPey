@@ -3,7 +3,7 @@ import {StyleSheet, View} from 'react-native';
 import QRCodeGenerator from 'react-native-qrcode-svg';
 import {} from '@react-navigation/native';
 
-import {Button, ScreenWrapper, Text} from '../components';
+import {ActivityIndicator, Button, ScreenWrapper, Text} from '../components';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {GenerateQRCodeParamList} from '../navigation/MainNavigation';
 
@@ -37,12 +37,10 @@ const GenerateQRCode: React.FC<Props> = ({navigation}) => {
   return (
     <ScreenWrapper style={{paddingHorizontal: 4}}>
       {/* header */}
-      <View style={styles.headerContainer}>
-        <Text>+256 700 640450</Text>
-      </View>
+      <View style={styles.headerContainer}></View>
       {/* vendor info */}
 
-      {loading && <Text>Please wait ...</Text>}
+      {loading && <ActivityIndicator visible={loading} />}
       {/* generated qrcode image */}
       {qrcodeData && (
         <View style={styles.qrCodeContainer}>
@@ -58,15 +56,22 @@ const GenerateQRCode: React.FC<Props> = ({navigation}) => {
       )}
 
       {/* action buttons */}
-      <View style={styles.buttonsContainer}>
-        <Button text="Generate QR-Code" onPress={handlerGenerateQRCode} />
-        <Button
-          text="Print QR-Code"
-          onPress={() => {
-            navigation.navigate('Print', {qrcode: svgData});
-          }}
-        />
-      </View>
+      {!loading && (
+        <View style={styles.buttonsContainer}>
+          <Button
+            text={svgData ? 're-generate qr-code' : 'generate qr-code'}
+            onPress={handlerGenerateQRCode}
+          />
+          {svgData && (
+            <Button
+              text="Print QR-Code"
+              onPress={() => {
+                navigation.navigate('Print', {qrcode: svgData});
+              }}
+            />
+          )}
+        </View>
+      )}
     </ScreenWrapper>
   );
 };

@@ -4,7 +4,7 @@ import QRCodeScanner from 'react-native-qrcode-scanner';
 import {RNCamera} from 'react-native-camera';
 import axios from 'axios';
 
-import {Button, ScreenWrapper, Text} from '../components';
+import {Button, ScreenWrapper} from '../components';
 
 const SERVER_URL = '';
 const TOKEN = '';
@@ -16,20 +16,6 @@ const Home = () => {
 
   const callToServer = async (data: {}) => {
     setScan(false);
-    try {
-      const response = await axios.post(SERVER_URL, data, {
-        headers: {
-          Authorization: `Bearer ${TOKEN}`,
-        },
-      });
-
-      if (!response) {
-        // launch fail
-        setFailure(true);
-      }
-    } catch (error: any) {
-      console.log(error.message);
-    }
   };
 
   const onReadSuccess = (e: any) => {
@@ -39,6 +25,7 @@ const Home = () => {
     };
 
     // if response, call to api
+    console.log(data);
     callToServer(data);
 
     // redirect to the payment details screen, along with
@@ -56,10 +43,6 @@ const Home = () => {
     <React.Fragment>
       <StatusBar backgroundColor={'#FFF'} barStyle="dark-content" />
       <ScreenWrapper style={{paddingHorizontal: 4}}>
-        <View style={styles.header}>
-          <Text>Safe QR-Code Scanner</Text>
-        </View>
-
         <View
           style={{
             flex: 1,
@@ -92,28 +75,17 @@ const Home = () => {
                 cameraStyle={{
                   overflow: 'hidden',
                   height: '100%',
-                  borderRadius: 8,
                 }}
                 cameraContainerStyle={{
-                  height: 400,
+                  height: 500,
                   marginVertical: 8,
                   backgroundColor: '#f5eff5',
-                  // borderRadius: 16,
                   overflow: 'hidden',
-                  // padding: 8,
                   width: '90%',
                   alignItems: 'center',
                   justifyContent: 'center',
                 }}
-                topContent={
-                  <Text style={styles.centerText}>
-                    Go to{' '}
-                    <Text style={styles.textBold}>
-                      wikipedia.org/wiki/QR_code
-                    </Text>{' '}
-                    on your computer and scan the QR code.
-                  </Text>
-                }
+                topContent={<View />}
                 bottomContent={
                   <Button
                     text="re-scan"

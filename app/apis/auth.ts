@@ -3,8 +3,11 @@ import Client from './base';
 const RESOURCE_ROUTE = '/auth';
 
 // register
-const registerUser = (userDetails: {phone: string; password: string}) =>
-  Client.post(`${RESOURCE_ROUTE}/signup/`, userDetails);
+const registerUser = (userDetails: {
+  phone: string;
+  password: string;
+  name: string;
+}) => Client.post(`${RESOURCE_ROUTE}/signup/`, userDetails);
 
 // login
 const loginUser = (userDetails: {phone: string; password: string}) =>

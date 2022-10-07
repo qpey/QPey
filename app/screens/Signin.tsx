@@ -1,15 +1,25 @@
-import {StyleSheet} from 'react-native';
 import React from 'react';
+import {Image, Keyboard, StyleSheet, View} from 'react-native';
 
 import {Formik} from 'formik';
 import * as Yup from 'yup';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 
-import {Button, ScreenWrapper, Text, TextInput} from '../components';
+import {
+  ActivityIndicator,
+  Button,
+  ScreenWrapper,
+  Text,
+  TextInput,
+} from '../components';
 import {COLORS, FONTS} from '../config';
 import {ErrorMessage} from '../components/form';
 import {AuthStackParamList} from '../navigation/AuthNavigation';
 import {PHONE_REGX} from '../config';
+
+import authApis from '../apis/auth';
+import useAuth from '../hooks/useAuth';
+import useApi from '../hooks/useApi';
 
 const validationSchema = Yup.object().shape({
   phone: Yup.string()
@@ -19,20 +29,53 @@ const validationSchema = Yup.object().shape({
   password: Yup.string().required().label('Password'),
 });
 
-type Props = NativeStackScreenProps<AuthStackParamList, 'SignIn'>;
-
 type SigninDetails = {
   phone: string;
   password: string;
 };
 
+type Props = NativeStackScreenProps<AuthStackParamList, 'SignIn'>;
+
 const Signin: React.FC<Props> = ({navigation}) => {
-  const handleSubmitForm = async (values: SigninDetails) => {
-    console.log(values);
+  const [errorSigningIn, setErrorSigningIn] = React.useState('');
+  const signInApi = useApi<string>(authApis.loginUser);
+  const auth = useAuth();
+
+  const handleSubmitForm = async ({password, phone}: SigninDetails) => {
+    Keyboard.dismiss();
+    setErrorSigningIn('');
+
+    const response = await signInApi.request({password, phone});
+    if (!response.ok) {
+      setErrorSigningIn(response.data[0].message);
+      return;
+    }
+    await auth.signIn(response.data.authToken);
   };
+
+  if (signInApi.isLoading) {
+    return <ActivityIndicator visible={signInApi.isLoading} />;
+  }
 
   return (
     <ScreenWrapper style={styles.screen}>
+      {/* logo */}
+      <View style={styles.logoContainer}>
+        <Image
+          source={require('../assets/logo.png')}
+          style={styles.logo}
+          resizeMode="contain"
+        />
+      </View>
+
+      {errorSigningIn && (
+        <ErrorMessage
+          error={errorSigningIn}
+          visible={Boolean(errorSigningIn)}
+          style={{alignSelf: 'center'}}
+        />
+      )}
+
       <Formik
         initialValues={{phone: '', password: ''}}
         onSubmit={handleSubmitForm}
@@ -95,8 +138,9 @@ export default Signin;
 const styles = StyleSheet.create({
   screen: {
     alignItems: 'center',
-    justifyContent: 'center',
+    // justifyContent: 'center',
     paddingHorizontal: 8,
+    paddingTop: 24,
   },
 
   linkText: {
@@ -104,5 +148,14 @@ const styles = StyleSheet.create({
     fontFamily: FONTS.semiBold,
     marginTop: 16,
     textTransform: 'capitalize',
+  },
+
+  logo: {width: 60, height: 60},
+  logoContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: 100,
+    width: '100%',
+    marginVertical: 8,
   },
 });

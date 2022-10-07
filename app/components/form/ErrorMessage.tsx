@@ -1,4 +1,4 @@
-import {StyleSheet} from 'react-native';
+import {StyleProp, StyleSheet, TextStyle} from 'react-native';
 import React from 'react';
 
 import {Text} from '../';
@@ -7,13 +7,14 @@ import {COLORS} from '../../config';
 type Props = {
   error: string;
   visible?: boolean;
+  style?: StyleProp<TextStyle>;
 };
 
-const ErrorMessage: React.FC<Props> = ({error, visible}) => {
+const ErrorMessage: React.FC<Props> = ({error, style, visible}) => {
   if (!visible || !error) {
     return null;
   }
-  return <Text style={styles.error}>{error}</Text>;
+  return <Text style={[styles.error, style]}>{error}</Text>;
 };
 
 export default ErrorMessage;
